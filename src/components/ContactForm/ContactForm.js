@@ -1,4 +1,5 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
 import { Formik } from 'formik';
 import {
   Form,
@@ -8,6 +9,7 @@ import {
   SubmitButton,
 } from './ContactForm.styled';
 import * as Yup from 'yup';
+import { addContact } from '../../redux/contactsSlice';
 
 // Валідація за допомогою Yup
 const SignupSchema = Yup.object().shape({
@@ -15,31 +17,35 @@ const SignupSchema = Yup.object().shape({
   number: Yup.string().required('Required'),
 });
 
-export const ContactForm = ({ onSubmit }) => (
-  <Formik
-    initialValues={{
-      name: '',
-      number: '',
-    }}
-    validationSchema={SignupSchema}
-    onSubmit={(values, actions) => {
-      onSubmit(values);
-      actions.resetForm();
-    }}
-  >
-    <Form>
-      <FormGroup>
-        Name
-        <Field type="text" name="name"></Field>
-        <ErrorMessage name="name" component={'span'} />
-      </FormGroup>
-      <FormGroup>
-        Number
-        <Field type="number" name="number"></Field>
-        <ErrorMessage name="number" component={'span'} />
-      </FormGroup>
+export const ContactForm = () => {
+  const dispatch = useDispatch();
 
-      <SubmitButton type="submit">Add contact</SubmitButton>
-    </Form>
-  </Formik>
-);
+  return (
+    <Formik
+      initialValues={{
+        name: '',
+        number: '',
+      }}
+      validationSchema={SignupSchema}
+      onSubmit={({ name, number }, actions) => {
+        dispatch(addContact(name, number));
+        actions.resetForm();
+      }}
+    >
+      <Form>
+        <FormGroup>
+          Name
+          <Field type="text" name="name"></Field>
+          <ErrorMessage name="name" component={'span'} />
+        </FormGroup>
+        <FormGroup>
+          Number
+          <Field type="number" name="number"></Field>
+          <ErrorMessage name="number" component={'span'} />
+        </FormGroup>
+
+        <SubmitButton type="submit">Add contact</SubmitButton>
+      </Form>
+    </Formik>
+  );
+};
