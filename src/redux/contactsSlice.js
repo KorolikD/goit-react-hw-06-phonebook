@@ -16,19 +16,7 @@ const contactsSlice = createSlice({
         };
       },
       reducer(state, action) {
-        const isContactInList = state.some(
-          ({ name: contactName }) =>
-            contactName.toLowerCase().trim() ===
-            action.payload.name.toLowerCase().trim()
-        );
-
-        if (isContactInList) {
-          alert(`${action.payload.name} is already in contacts`);
-        } else {
-          state.push(action.payload);
-          //   state.name = action.payload.name.trim();
-          //   state.number = action.payload.number;
-        }
+        state.push(action.payload);
       },
     },
     deleteContact(state, action) {
@@ -38,4 +26,8 @@ const contactsSlice = createSlice({
 });
 
 export const { addContact, deleteContact } = contactsSlice.actions;
+
 export const contactsReducer = contactsSlice.reducer;
+
+//* Selector
+export const getContacts = state => state.contacts;

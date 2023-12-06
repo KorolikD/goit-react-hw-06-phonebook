@@ -6,15 +6,26 @@ import {
   Text,
   BoldText,
 } from './ContactsList.styled';
-import { deleteContact } from '../../redux/contactsSlice';
+import { deleteContact, getContacts } from '../../redux/contactsSlice';
+import { getFilter } from '../../redux/filterSlice';
 
 export const ContactsList = () => {
-  const contacts = useSelector(state => state.contacts);
   const dispatch = useDispatch();
+
+  const contacts = useSelector(getContacts);
+  const filter = useSelector(getFilter);
+
+  const visibleFilteredContacts = contacts => {
+    return contacts.filter(({ name }) =>
+      name.toLowerCase().includes(filter.toLowerCase())
+    );
+  };
+
+  const visibleContacts = visibleFilteredContacts(contacts);
 
   return (
     <ListContacts>
-      {contacts.map(({ id, name, number }) => (
+      {visibleContacts.map(({ id, name, number }) => (
         <ListItem key={id}>
           <Text>
             <BoldText>{name}</BoldText>: {number}

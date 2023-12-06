@@ -1,63 +1,25 @@
-import { useEffect, useState } from 'react';
 import { GlobalStyles } from 'styles';
 
 import { Title, TitleH2 } from './App.styled';
 import { ContactForm, Filter, ContactsList } from 'components';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
+import { getContacts } from '../../redux/contactsSlice';
+import { Toaster } from 'react-hot-toast';
 
 export const App = () => {
-  // const [contacts, setContacts] = useState(
-  //   () => JSON.parse(window.localStorage.getItem('contacts')) ?? []
-  // );
-  const [filter, setFilter] = useState('');
-
-  // useEffect(() => {
-  //   window.localStorage.setItem('contacts', JSON.stringify(contacts));
-  // }, [contacts]);
-
-  // const addContact = ({ name, number }) => {
-  //   const isContactInList = contacts.some(
-  //     ({ name: contactName }) =>
-  //       contactName.toLowerCase().trim() === name.toLowerCase().trim()
-  //   );
-
-  //   isContactInList
-  //     ? alert(`${name} is olready in contacts`)
-  //     : setContacts(prevState => [
-  //         ...prevState,
-  //         { id: nanoid(), name: name.trim(), number },
-  //       ]);
-  // };
-
-  const onChangeFilter = value => {
-    setFilter(value);
-  };
-
-  // const deleteContact = contactId => {
-  //   setContacts(prevState => prevState.filter(item => item.id !== contactId));
-  // };
-
-  const contacts = useSelector(state => state.contacts);
-
-  const visibleContactsFilter = arr => {
-    return arr.filter(({ name }) =>
-      name.toLowerCase().includes(filter.toLowerCase())
-    );
-  };
-
-  const visibleContacts = visibleContactsFilter(contacts);
+  const contacts = useSelector(getContacts);
 
   return (
     <>
+      <Toaster position="top-right" reverseOrder={false} />
+
       <Title>Phonebook</Title>
       <ContactForm />
 
       <TitleH2>Contacts</TitleH2>
-      <Filter filter={filter} onChange={onChangeFilter} />
+      <Filter />
 
-      {visibleContacts.length > 0 && (
-        <ContactsList contacts={visibleContacts} />
-      )}
+      {contacts.length > 0 && <ContactsList />}
 
       <GlobalStyles />
     </>

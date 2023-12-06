@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Formik } from 'formik';
 import {
   Form,
@@ -9,7 +9,8 @@ import {
   SubmitButton,
 } from './ContactForm.styled';
 import * as Yup from 'yup';
-import { addContact } from '../../redux/contactsSlice';
+import { addContact, getContacts } from '../../redux/contactsSlice';
+import toast from 'react-hot-toast';
 
 // Валідація за допомогою Yup
 const SignupSchema = Yup.object().shape({
@@ -20,6 +21,8 @@ const SignupSchema = Yup.object().shape({
 export const ContactForm = () => {
   const dispatch = useDispatch();
 
+  const contacts = useSelector(getContacts);
+
   return (
     <Formik
       initialValues={{
@@ -28,7 +31,17 @@ export const ContactForm = () => {
       }}
       validationSchema={SignupSchema}
       onSubmit={({ name, number }, actions) => {
-        dispatch(addContact(name, number));
+        const isContactInList = contacts.some(
+          ({ name: contactName }) =>
+            contactName.toLowerCase().trim() === name.toLowerCase().trim()
+        );
+
+        if (isContactInList) {
+          toast.error(`"${name}" is already in contacts`);
+        } else {
+          dispatch(addContact(name, number));
+        }
+
         actions.resetForm();
       }}
     >
